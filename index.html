@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>kgV über Primfaktoren – 6. Klasse</title>
+  <style>
+    :root {
+      font-family: system-ui;
+      background: #f3f4f6;
+    }
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .app {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      width: 800px;
+      box-sizing: border-box;
+    }
+    h1 {
+      margin-top: 0;
+      text-align: center;
+      font-size: 1.4rem;
+    }
+    .numbers {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-bottom: 0.5rem;
+    }
+    .num {
+      font-size: 2.2rem;
+      font-weight: 700;
+      text-align: center;
+    }
+    .labels {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    .row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-bottom: 0.4rem;
+    }
+    .pf-input {
+      width: 2.4rem;
+      height: 2.4rem;
+      font-size: 1.1rem;
+      text-align: center;
+      border: 2px solid #d1d5db;
+      border-radius: 10px;
+      background: #f9fafb;
+    }
+    .correct {
+      background: #dcfce7;
+      border-color: #16a34a;
+    }
+    .incorrect {
+      background: #fee2e2;
+      border-color: #b91c1c;
+    }
+    .kgv-row {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .kgv-input {
+      width: 6rem;
+      height: 2.8rem;
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-align: center;
+      border-radius: 10px;
+      border: 2px solid #d1d5db;
+      background: #f9fafb;
+    }
+    .btns {
+      display: flex;
+      justify-content: center;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin-top: .7rem;
+    }
+    .btn {
+      padding: .5rem 1rem;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      background: #f9fafb;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn.primary {
+      background: #2563eb;
+      border-color: #1d4ed8;
+      color: #fff;
+    }
+    .feedback {
+      text-align: center;
+      font-weight: 600;
+      min-height: 1.3rem;
+      margin-top: .6rem;
+    }
+    .ok { color:#15803d; }
+    .err { color:#b91c1c; }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <h1>kgV über Primfaktoren berechnen</h1>
+
+  <div class="labels"><div>Zahl A</div><div>Zahl B</div></div>
+  <div class="numbers"><div id="a"></div><div id="b"></div></div>
+
+  <div><strong>Primfaktorzerlegung von A:</strong></div>
+  <div class="row" id="row-a"></div>
+
+  <div><strong>Primfaktorzerlegung von B:</strong></div>
+  <div class="row" id="row-b"></div>
+
+  <div class="kgv-row">
+    <strong>kgV(A, B) = </strong>
+    <input type="text" class="kgv-input" id="kgv">
+  </div>
+
+  <div class="btns">
+    <button class="btn primary" id="checkBtn">Überprüfen</button>
+    <button class="btn" id="nextBtn">Neue Zahlen</button>
+  </div>
+
+  <div class="feedback" id="feedback"></div>
+
+</div>
+
+<script>
+  const MIN = 12;
+  const MAX = 60;
+  const FIELDS = 10;
+
+  let aNum, bNum, aPF, bPF, lcm;
+
+  const aEl = document.getElementById("a");
+  const bEl = document.getElementById("b");
+  const rowA = document.getElementById("row-a");
+  const rowB = document.getElementById("row-b");
+  const kgvIn = document.getElementById("kgv");
+  const fb = document.getElementById("feedback");
+
+  function gcd(x,y){return y?gcd(y,x%y):x;}
+  function lcmf(x,y){return x*y/gcd(x,y);}
+  function isPrime(n){for(let i=2;i*i<=n;i++)if(n%i===0)return false;return n>1;}
+
+  function primeFactors(n){
+    const f=[];
+    let d=2;
+    while(n>1){
+      while(n%d===0){f.push(d);n/=d;}
+      d++;
+    }
+    return f;
+  }
+
+  function newTask(){
+    do{
+      aNum=Math.floor(Math.random()*(MAX-MIN+1))+MIN;
+      bNum=Math.floor(Math.random()*(MAX-MIN+1))+MIN;
+    }while(aNum===bNum || isPrime(aNum) || isPrime(bNum));
+    aPF=primeFactors(aNum);
+    bPF=primeFactors(bNum);
+    lcm=lcmf(aNum,bNum);
+
+    aEl.textContent=aNum;
+    bEl.textContent=bNum;
+    fb.textContent="";
+    kgvIn.value="";
+
+    buildFields(rowA);
+    buildFields(rowB);
+  }
+
+  function buildFields(container){
+    container.innerHTML="";
+    for(let i=0;i<FIELDS;i++){
+      let inp=document.createElement("input");
+      inp.type="text";
+      inp.className="pf-input";
+      container.appendChild(inp);
+    }
+  }
+
+  function countValues(factors){
+    const c=new Map();
+    for(const x of factors)c.set(x,(c.get(x)||0)+1);
+    return c;
+  }
+
+  function checkRow(container, correctFactors){
+    const counts=countValues(correctFactors);
+    const inputs=[...container.children];
+    const userValues=[];
+    
+    inputs.forEach(i=>{
+      i.classList.remove("correct","incorrect");
+      const v=parseInt(i.value);
+      if(!isNaN(v)) userValues.push(v);
+    });
+
+    // vergleichen: gleiche Anzahl jeder Primzahl erforderlich
+    const userCount=countValues(userValues);
+    let ok=true;
+    for(const [p,c] of counts){
+      if(userCount.get(p)!==c){
+        ok=false;
+      }
+    }
+
+    inputs.forEach(i=>{
+      const v=parseInt(i.value);
+      if(!isNaN(v)){
+        if(correctFactors.includes(v)) i.classList.add("correct");
+        else i.classList.add("incorrect");
+      }
+    });
+
+    return ok;
+  }
+
+  function check(){
+    const okA=checkRow(rowA,aPF);
+    const okB=checkRow(rowB,bPF);
+    const k=parseInt(kgvIn.value);
+    const okK=k===lcm;
+    kgvIn.classList.remove("correct","incorrect");
+    if(okK) kgvIn.classList.add("correct");
+    else kgvIn.classList.add("incorrect");
+
+    if(okA && okB && okK){
+      fb.textContent="Super! Alles korrekt! 🎉";
+      fb.className="feedback ok";
+    }else{
+      fb.textContent="Schau genau hin: stimmt die Zerlegung überall?";
+      fb.className="feedback err";
+    }
+  }
+
+  document.getElementById("checkBtn").onclick=check;
+  document.getElementById("nextBtn").onclick=newTask;
+
+  newTask();
+</script>
+
+</body>
+</html>
