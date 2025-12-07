@@ -17,10 +17,10 @@
     }
     .app {
       background: #fff;
-      padding: 2rem;
+      padding: 2rem 2.2rem;
       border-radius: 16px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      width: 800px;
+      width: 840px;
       box-sizing: border-box;
     }
     h1 {
@@ -28,11 +28,61 @@
       text-align: center;
       font-size: 1.4rem;
     }
+
+    /* Erklärungsteil oben */
+    .explanation {
+      background: #f9fafb;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      padding: 0.9rem 1.1rem;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    .explanation h2 {
+      margin: 0 0 0.4rem 0;
+      font-size: 1.05rem;
+    }
+    .explanation ol {
+      margin: 0.2rem 0 0.5rem 1.1rem;
+      padding: 0;
+    }
+    .explanation li {
+      margin-bottom: 0.1rem;
+    }
+    .example-table {
+      border-collapse: collapse;
+      margin: 0.4rem 0;
+      font-size: 0.85rem;
+    }
+    .example-table th,
+    .example-table td {
+      border: 1px solid #d1d5db;
+      padding: 0.15rem 0.5rem;
+      text-align: center;
+    }
+    .example-table th {
+      background: #e5e7eb;
+    }
+    .explanation-highlight {
+      font-weight: 600;
+      color: #111827;
+    }
+    .divider {
+      margin: 0.8rem 0 0.6rem;
+      border-top: 1px solid #e5e7eb;
+    }
+    .task-intro {
+      font-size: 0.9rem;
+      color: #374151;
+      margin-bottom: 0.4rem;
+    }
+
     .numbers {
       display: flex;
       justify-content: center;
       gap: 3rem;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.3rem;
     }
     .num {
       font-size: 2.2rem;
@@ -45,6 +95,7 @@
       gap: 3rem;
       font-size: 0.9rem;
       color: #555;
+      margin-bottom: 0.1rem;
     }
     .row {
       display: flex;
@@ -71,7 +122,7 @@
       border-color: #b91c1c;
     }
     .kgv-row {
-      margin-top: 1rem;
+      margin-top: 0.8rem;
       text-align: center;
     }
     .kgv-input {
@@ -98,17 +149,22 @@
       background: #f9fafb;
       cursor: pointer;
       font-weight: 600;
+      font-size: 0.95rem;
     }
     .btn.primary {
       background: #2563eb;
       border-color: #1d4ed8;
       color: #fff;
     }
+    .btn.primary:hover {
+      background: #1d4ed8;
+    }
     .feedback {
       text-align: center;
       font-weight: 600;
       min-height: 1.3rem;
       margin-top: .6rem;
+      font-size: 0.95rem;
     }
     .ok { color:#15803d; }
     .err { color:#b91c1c; }
@@ -117,10 +173,75 @@
 <body>
 
 <div class="app">
-  <h1>kgV über Primfaktoren berechnen</h1>
+  <h1>kgV mit der Primfaktorzerlegung bestimmen</h1>
 
-  <div class="labels"><div>Zahl A</div><div>Zahl B</div></div>
-  <div class="numbers"><div id="a"></div><div id="b"></div></div>
+  <!-- Erklärung oberhalb der Aufgabe -->
+  <div class="explanation">
+    <h2>So bestimmst du das kgV mit Primfaktoren</h2>
+    <ol>
+      <li><span class="explanation-highlight">Zerlege beide Zahlen in Primfaktoren.</span><br>
+        Beispiel: 12 und 18<br>
+        12 = 2 · 2 · 3<br>
+        18 = 2 · 3 · 3
+      </li>
+      <li><span class="explanation-highlight">Schau dir an, welche Primzahlen vorkommen</span>
+        und wie oft sie in jeder Zahl vorkommen.
+      </li>
+    </ol>
+
+    <table class="example-table">
+      <tr>
+        <th>Primzahl</th>
+        <th>in 12</th>
+        <th>in 18</th>
+        <th>wir nehmen</th>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>2×</td>
+        <td>1×</td>
+        <td><strong>2×</strong></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>1×</td>
+        <td>2×</td>
+        <td><strong>2×</strong></td>
+      </tr>
+    </table>
+
+    <ol start="3">
+      <li><span class="explanation-highlight">Multipliziere die „maximalen“ Primfaktoren.</span><br>
+        kgV(12, 18) = 2 · 2 · 3 · 3 = <strong>36</strong>
+      </li>
+    </ol>
+
+    <p>
+      Merksatz: <br>
+      <span class="explanation-highlight">
+        Das kgV enthält jeden Primfaktor mindestens so oft,
+        wie er in einer der Zahlen vorkommt.
+      </span>
+    </p>
+
+    <div class="divider"></div>
+    <p class="task-intro">
+      <strong>Deine Aufgabe hier unten:</strong><br>
+      Zerlege die beiden Zahlen A und B in Primfaktoren und trage sie unten in die Felder ein.
+      Die Reihenfolge ist egal, überflüssige Felder lässt du leer. <br>
+      Unten gibst du dann das kgV(A, B) ein und klickst auf „Überprüfen“.
+    </p>
+  </div>
+
+  <!-- Interaktive Übung -->
+  <div class="labels">
+    <div>Zahl A</div>
+    <div>Zahl B</div>
+  </div>
+  <div class="numbers">
+    <div id="a" class="num"></div>
+    <div id="b" class="num"></div>
+  </div>
 
   <div><strong>Primfaktorzerlegung von A:</strong></div>
   <div class="row" id="row-a"></div>
@@ -182,7 +303,9 @@
     aEl.textContent=aNum;
     bEl.textContent=bNum;
     fb.textContent="";
+    fb.className="feedback";
     kgvIn.value="";
+    kgvIn.classList.remove("correct","incorrect");
 
     buildFields(rowA);
     buildFields(rowB);
@@ -215,7 +338,6 @@
       if(!isNaN(v)) userValues.push(v);
     });
 
-    // vergleichen: gleiche Anzahl jeder Primzahl erforderlich
     const userCount=countValues(userValues);
     let ok=true;
     for(const [p,c] of counts){
@@ -245,10 +367,10 @@
     else kgvIn.classList.add("incorrect");
 
     if(okA && okB && okK){
-      fb.textContent="Super! Alles korrekt! 🎉";
+      fb.textContent="Super! Zerlegung und kgV sind korrekt. 🎉";
       fb.className="feedback ok";
     }else{
-      fb.textContent="Schau genau hin: stimmt die Zerlegung überall?";
+      fb.textContent="Noch nicht ganz richtig. Prüfe deine Primfaktoren und das kgV.";
       fb.className="feedback err";
     }
   }
